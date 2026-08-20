@@ -93,7 +93,7 @@ jobs:
       - name: Checkout tools repository
         uses: actions/checkout@v6
         with:
-          repository: krate-binaries/tools
+          repository: krate-apps/tools
           path: tools
 
       - name: Setup variables
@@ -175,7 +175,7 @@ jobs:
       - name: Checkout tools repository
         uses: actions/checkout@v6
         with:
-          repository: krate-binaries/tools
+          repository: krate-apps/tools
           path: tools
 
       - name: Download artifacts for this version
