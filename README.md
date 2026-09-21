@@ -11,7 +11,7 @@ Workflow `.github/workflows/build.yaml` runs **only** on **`workflow_dispatch`**
 - Builds via GitHub Actions (manual trigger)
 - Debian packages that install Transmission in `/opt/Krate/vendor/transmission-daemon_${VERSION}`
 - CI uses a **single reference image** (`matrix.py`); **one `.deb` per Transmission version** combination, for recent **Debian and Ubuntu** on **amd64**
-- Upstream versions: **4.0.6**, **4.10.0**, **4.11.0**, **latest** (Transmission repo **`main`** branch; package version from `git describe`)
+- Upstream versions: **4.0.6**, **4.1.0**, **4.1.1**, **4.1.3**
 - Static compilation for server usage
 - Web interface support
 - JSON-RPC API support
