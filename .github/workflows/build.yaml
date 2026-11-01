@@ -78,7 +78,7 @@ jobs:
     needs: setup-matrix
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix: ${{ fromJson(needs.setup-matrix.outputs.matrix) }}
     container:
       image: debian:trixie
@@ -126,7 +126,7 @@ jobs:
 
       - name: Update control file (pinned tags)
         run: |
-          sed -i "s/^Version:.*/Version: ${{ matrix.version }}-1/" ${{ steps.vars.outputs.control_file }}
+          sed -i "s/^Version:.*/Version: ${{ matrix.version }}-2/" ${{ steps.vars.outputs.control_file }}
           sed -i "s/^Package:.*/Package: ${{ steps.vars.outputs.package_name }}/" ${{ steps.vars.outputs.control_file }}
           sed -i "s/^Maintainer:.*/Maintainer: ${{ secrets.COMMITTER_NAME }} <${{ secrets.COMMITTER_EMAIL }}>/" ${{ steps.vars.outputs.control_file }}
       - name: Build Transmission
@@ -162,12 +162,12 @@ jobs:
 
   release:
     name: Create Releases
-    needs: build
+    needs: [setup-matrix, build]
     runs-on: ubuntu-latest
 
     strategy:
-      matrix:
-        version: ["4.0.6", "4.1.0", "4.1.1", "4.1.3"]
+      fail-fast: false
+      matrix: ${{ fromJson(needs.setup-matrix.outputs.matrix) }}
 
     steps:
       - name: Checkout repository
@@ -193,6 +193,12 @@ jobs:
             \( -name "krate-transmission*${{ matrix.version }}*.deb" -o \
               -name "krate-transmission*${{ matrix.version }}*.json" \) \
             -exec cp {} release_assets/ \;
+          if [[ -z "$(ls release_assets/*.deb 2>/dev/null)" ]]; then
+            echo "skip_release=true" >> $GITHUB_OUTPUT
+            echo "No packages to release"
+            ls -lah release_assets/ || true
+            exit 0
+          fi
           pip3 install --upgrade pyyaml
           python3 tools/ci/release_notes.py \
             --product transmission \
@@ -205,13 +211,7 @@ jobs:
           else
             echo "prerelease=false" >> $GITHUB_OUTPUT
           fi
-          if [[ -z "$(ls release_assets/*.deb 2>/dev/null)" ]]; then
-            echo "skip_release=true" >> $GITHUB_OUTPUT
-            echo "No packages to release"
-            ls -lah release_assets/
-          else
-            echo "skip_release=false" >> $GITHUB_OUTPUT
-          fi
+          echo "skip_release=false" >> $GITHUB_OUTPUT
 
       - name: Create Release
         if: steps.prepare.outputs.skip_release == 'false'
