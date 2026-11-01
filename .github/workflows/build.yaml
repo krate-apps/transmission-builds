@@ -126,7 +126,7 @@ jobs:
 
       - name: Update control file (pinned tags)
         run: |
-          sed -i "s/^Version:.*/Version: ${{ matrix.version }}-3/" ${{ steps.vars.outputs.control_file }}
+          sed -i "s/^Version:.*/Version: ${{ matrix.version }}-4/" ${{ steps.vars.outputs.control_file }}
           sed -i "s/^Package:.*/Package: ${{ steps.vars.outputs.package_name }}/" ${{ steps.vars.outputs.control_file }}
           sed -i "s/^Maintainer:.*/Maintainer: ${{ secrets.COMMITTER_NAME }} <${{ secrets.COMMITTER_EMAIL }}>/" ${{ steps.vars.outputs.control_file }}
       - name: Build Transmission
