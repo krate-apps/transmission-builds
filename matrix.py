@@ -6,6 +6,7 @@ TRANSMISSION_VERSIONS = [
     "4.1.0",
     "4.1.1",
     "4.1.3",
+    "4.1.4",
 ]
 
 matrix = [{"version": version, "os": "debian-13", "codename": "trixie"} for version in TRANSMISSION_VERSIONS]
